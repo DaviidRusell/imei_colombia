@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API IMEI Colombia</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent2: #ff3e6c;
+    --accent3: #3e9eff;
+    --text: #e8e8f0;
+    --muted: #6b6b7e;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    border: 1px solid rgba(0,255,136,0.3);
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  /* Input group */
+  .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 16px;
+    padding: 12px 16px;
+    letter-spacing: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+
+  input[type="text"]::placeholder {
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  button:hover { background: #00e07a; transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Result */
+  .result {
+    display: none;
+    margin-top: 20px;
+  }
+
+  .result.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border: 1px solid;
+  }
+
+  .status-bar.LIMPIO       { border-color: var(--accent);  background: rgba(0,255,136,0.05); }
+  .status-bar.REPORTADO    { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
+  .status-bar.DUPLICADO    { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
+  .status-bar.INVALIDO     { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
+  .status-bar.NO_REGISTRADO{ border-color: #ff9900;        background: rgba(255,153,0,0.05); }
+  .status-bar.ERROR        { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
+  .status-bar.DESCONOCIDO  { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
+
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  .LIMPIO    .status-dot { background: var(--accent); }
+  .REPORTADO .status-dot { background: var(--accent2); }
+  .DUPLICADO .status-dot { background: #ff9900; }
+  .ERROR     .status-dot { background: var(--muted); animation: none; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .status-label {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .LIMPIO    .status-label { color: var(--accent); }
+  .REPORTADO .status-label { color: var(--accent2); }
+  .DUPLICADO .status-label { color: #ff9900; }
+  .INVALIDO  .status-label { color: var(--accent2); }
+  .NO_REGISTRADO .status-label { color: #ff9900; }
+  .ERROR     .status-label { color: var(--muted); }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0;
+  }
+
+  .result-row {
+    display: contents;
+  }
+
+  .result-key, .result-val {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .result-key {
+    font-family: var(--mono);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .result-val {
+    font-family: var(--mono);
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  /* Endpoint docs */
+  .endpoint {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .endpoint:last-child { border-bottom: none; }
+
+  .method {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+
+  .method.GET  { background: rgba(0,255,136,0.15); color: var(--accent); }
+  .method.POST { background: rgba(62,158,255,0.15); color: var(--accent3); }
+
+  .ep-path {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .ep-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Loading */
+  .loading {
+    display: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    padding: 16px 0;
+  }
+
+  .loading::after {
+    content: '';
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0%  { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+  }
+
+  /* Batch textarea */
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 16px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+
+  .batch-results { margin-top: 16px; }
+
+  .batch-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .batch-imei { color: var(--muted); width: 160px; flex-shrink: 0; }
+  .batch-estado { font-weight: 700; letter-spacing: 1px; }
+  .batch-msg { color: var(--muted); font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .LIMPIO-text    { color: var(--accent); }
+  .REPORTADO-text { color: var(--accent2); }
+  .DUPLICADO-text { color: #ff9900; }
+  .ERROR-text     { color: var(--muted); }
+
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .stats-row span { color: var(--text); font-weight: 700; margin-left: 4px; }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="badge">v1.0.0 · SRTM Colombia</div>
+    <h1>API IMEI<br><span>Colombia</span></h1>
+    <p class="subtitle">
+      Consulta el estado de equipos móviles en la Base de Datos<br>
+      Negativa del SRTM — Resolución CRC 3128 de 2011
+    </p>
+  </header>
+
+  <!-- Consulta individual -->
+  <div class="card">
+    <div class="card-title">// Consulta individual</div>
+    <div class="input-group">
+      <input type="text" id="imeiInput" placeholder="353265110903640" maxlength="15">
+      <button onclick="consultar()" id="btnConsultar">Consultar</button>
+    </div>
+    <div class="loading" id="loading">Consultando SRTM</div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <!-- Consulta batch -->
+  <div class="card">
+    <div class="card-title">// Consulta múltiple (máx. 20)</div>
+    <textarea id="batchInput" placeholder="353265110903640&#10;490154203237518&#10;012345678901239&#10;&#10;Un IMEI por línea..."></textarea>
+    <div style="margin-top:12px">
+      <button onclick="consultarBatch()" id="btnBatch">Consultar todos</button>
+    </div>
+    <div class="loading" id="loadingBatch">Consultando batch</div>
+    <div class="batch-results" id="batchResults"></div>
+  </div>
+
+  <!-- Endpoints -->
+  <div class="card">
+    <div class="card-title">// Endpoints disponibles</div>
+
+    <div class="endpoint">
+      <span class="method GET">GET</span>
+      <div>
+        <div class="ep-path">/imei/{imei}</div>
+        <div class="ep-desc">Consulta individual — retorna JSON con estado del IMEI</div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <span class="method POST">POST</span>
+      <div>
+        <div class="ep-path">/imei/batch</div>
+        <div class="ep-desc">Consulta múltiple — body: <code style="color:var(--accent3)">{"imeis": ["...", "..."]}</code></div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <span class="method GET">GET</span>
+      <div>
+        <div class="ep-path">/health</div>
+        <div class="ep-desc">Estado del servicio</div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <span class="method GET">GET</span>
+      <div>
+        <div class="ep-path">/docs</div>
+        <div class="ep-desc">Documentación Swagger UI interactiva</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Fuente: imeicolombia.com.co · Inetum · CRC</span>
+    <span>FastAPI + BeautifulSoup</span>
+  </footer>
+
+</div>
+
+<script>
+const BASE = '';  // misma origen
+
+const estadoLabel = {
+  LIMPIO:        '✓ LIMPIO',
+  REPORTADO:     '✗ REPORTADO',
+  DUPLICADO:     '⚠ DUPLICADO',
+  INVALIDO:      '✗ INVÁLIDO',
+  NO_REGISTRADO: '⚠ NO REGISTRADO',
+  ERROR:         '? ERROR',
+  DESCONOCIDO:   '? DESCONOCIDO',
+};
+
+async function consultar() {
+  const imei = document.getElementById('imeiInput').value.trim();
+  if (!imei) return;
+
+  const btn     = document.getElementById('btnConsultar');
+  const loading = document.getElementById('loading');
+  const result  = document.getElementById('result');
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  result.className = 'result';
+
+  try {
+    const res  = await fetch(`${BASE}/imei/${imei}`);
+    const data = await res.json();
+    renderResult(data, result);
+  } catch(e) {
+    renderResult({ imei, estado: 'ERROR', mensaje: e.message, en_base_negativa: null, operador: null }, result);
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+function renderResult(data, container) {
+  const estado = data.estado || 'DESCONOCIDO';
+  container.className = 'result visible';
+  container.innerHTML = `
+    <div class="status-bar ${estado}">
+      <div class="status-dot"></div>
+      <div class="status-label">${estadoLabel[estado] || estado}</div>
+    </div>
+    <div class="result-grid">
+      <div class="result-key">IMEI</div>
+      <div class="result-val">${data.imei || '—'}</div>
+      <div class="result-key">Estado</div>
+      <div class="result-val">${estado}</div>
+      <div class="result-key">Base negativa</div>
+      <div class="result-val">${data.en_base_negativa === null ? '—' : data.en_base_negativa ? 'Sí' : 'No'}</div>
+      <div class="result-key">Operador</div>
+      <div class="result-val">${data.operador || '—'}</div>
+      <div class="result-key">Mensaje</div>
+      <div class="result-val">${data.mensaje || '—'}</div>
+    </div>
+  `;
+}
+
+async function consultarBatch() {
+  const raw   = document.getElementById('batchInput').value;
+  const imeis = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (imeis.length === 0) return;
+
+  const btn     = document.getElementById('btnBatch');
+  const loading = document.getElementById('loadingBatch');
+  const results = document.getElementById('batchResults');
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  results.innerHTML = '';
+
+  try {
+    const res  = await fetch(`${BASE}/imei/batch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imeis })
+    });
+    const data = await res.json();
+    renderBatch(data, results);
+  } catch(e) {
+    results.innerHTML = `<div style="color:var(--accent2);font-family:var(--mono);font-size:12px;padding:12px">Error: ${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+function renderBatch(data, container) {
+  const limpios   = data.resultados.filter(r => r.estado === 'LIMPIO').length;
+  const reportados = data.resultados.filter(r => r.estado === 'REPORTADO').length;
+
+  let html = `
+    <div class="stats-row">
+      TOTAL <span>${data.total}</span>
+      &nbsp;·&nbsp; LIMPIOS <span style="color:var(--accent)">${limpios}</span>
+      &nbsp;·&nbsp; REPORTADOS <span style="color:var(--accent2)">${reportados}</span>
+      &nbsp;·&nbsp; ERRORES <span>${data.errores}</span>
+    </div>
+  `;
+
+  for (const r of data.resultados) {
+    html += `
+      <div class="batch-item">
+        <span class="batch-imei">${r.imei}</span>
+        <span class="batch-estado ${r.estado}-text">${estadoLabel[r.estado] || r.estado}</span>
+        <span class="batch-msg">${r.mensaje}</span>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+// Enter para buscar
+document.getElementById('imeiInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') consultar();
+});
+</script>
+</body>
+</html>
