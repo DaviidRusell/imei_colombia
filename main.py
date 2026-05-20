@@ -124,13 +124,19 @@ def consultar_imei_srtm(imei: str) -> IMEIResponse:
     }
 
     session = requests.Session()
-    session.get("https://www.imeicolombia.com.co/", headers=headers, timeout=10)
+    
+    # ✅ Agregar verify=False en ambas llamadas
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
+    session.get("https://www.imeicolombia.com.co/", headers=headers, timeout=10, verify=False)
 
     response = session.post(
         "https://www.imeicolombia.com.co/Consulta",
         data={"IMEI": imei},
         headers=headers,
-        timeout=15
+        timeout=15,
+        verify=False   # ✅ también aquí
     )
     response.encoding = 'iso-8859-1'
 
