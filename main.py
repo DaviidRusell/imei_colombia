@@ -1,13 +1,14 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
-import time
-import asyncio
 from typing import Optional
 import re
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = FastAPI(
     title="API IMEI Colombia",
@@ -24,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Modelos ---
+# --- Modelo ---
 
 class IMEIResponse(BaseModel):
     imei: str
@@ -33,23 +34,6 @@ class IMEIResponse(BaseModel):
     operador: Optional[str]
     mensaje: str
 
-class BatchRequest(BaseModel):
-    imeis: list[str]
-
-    @field_validator("imeis")
-    @classmethod
-    def validar_lista(cls, v):
-        if len(v) == 0:
-            raise ValueError("La lista de IMEIs no puede estar vacía")
-        if len(v) > 20:
-            raise ValueError("Máximo 20 IMEIs por solicitud")
-        return v
-
-class BatchResponse(BaseModel):
-    total: int
-    resultados: list[IMEIResponse]
-    errores: int
-
 # --- Lógica de consulta ---
 
 def validar_imei(imei: str) -> bool:
@@ -57,7 +41,6 @@ def validar_imei(imei: str) -> bool:
 
 def parsear_respuesta(imei: str, html: str) -> IMEIResponse:
     soup = BeautifulSoup(html, 'html.parser')
-
     fila_datos = soup.find('tr', class_='azlc')
 
     if not fila_datos:
@@ -85,35 +68,17 @@ def parsear_respuesta(imei: str, html: str) -> IMEIResponse:
     msg_lower = mensaje.lower()
 
     if "no se encuentra registrado en la base de datos negativa" in msg_lower:
-        return IMEIResponse(
-            imei=imei_resp, estado="LIMPIO",
-            en_base_negativa=False, operador=None, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="LIMPIO", en_base_negativa=False, operador=None, mensaje=mensaje)
     elif "duplicado" in msg_lower:
-        return IMEIResponse(
-            imei=imei_resp, estado="DUPLICADO",
-            en_base_negativa=True, operador=mensaje, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="DUPLICADO", en_base_negativa=True, operador=mensaje, mensaje=mensaje)
     elif "reportado" in msg_lower or ("base de datos negativa" in msg_lower and "no se encuentra" not in msg_lower):
-        return IMEIResponse(
-            imei=imei_resp, estado="REPORTADO",
-            en_base_negativa=True, operador=mensaje, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="REPORTADO", en_base_negativa=True, operador=mensaje, mensaje=mensaje)
     elif "inválido" in msg_lower or "invalido" in msg_lower:
-        return IMEIResponse(
-            imei=imei_resp, estado="INVALIDO",
-            en_base_negativa=False, operador=None, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="INVALIDO", en_base_negativa=False, operador=None, mensaje=mensaje)
     elif "no registrado" in msg_lower:
-        return IMEIResponse(
-            imei=imei_resp, estado="NO_REGISTRADO",
-            en_base_negativa=False, operador=None, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="NO_REGISTRADO", en_base_negativa=False, operador=None, mensaje=mensaje)
     else:
-        return IMEIResponse(
-            imei=imei_resp, estado="DESCONOCIDO",
-            en_base_negativa=None, operador=None, mensaje=mensaje
-        )
+        return IMEIResponse(imei=imei_resp, estado="DESCONOCIDO", en_base_negativa=None, operador=None, mensaje=mensaje)
 
 def consultar_imei_srtm(imei: str) -> IMEIResponse:
     headers = {
@@ -124,11 +89,6 @@ def consultar_imei_srtm(imei: str) -> IMEIResponse:
     }
 
     session = requests.Session()
-    
-    # ✅ Agregar verify=False en ambas llamadas
-    import urllib3
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
     session.get("https://www.imeicolombia.com.co/", headers=headers, timeout=10, verify=False)
 
     response = session.post(
@@ -136,15 +96,12 @@ def consultar_imei_srtm(imei: str) -> IMEIResponse:
         data={"IMEI": imei},
         headers=headers,
         timeout=15,
-        verify=False   # ✅ también aquí
+        verify=False
     )
     response.encoding = 'iso-8859-1'
 
     if response.status_code != 200:
-        raise HTTPException(
-            status_code=502,
-            detail=f"El servidor SRTM respondió con HTTP {response.status_code}"
-        )
+        raise HTTPException(status_code=502, detail=f"El servidor SRTM respondió con HTTP {response.status_code}")
 
     return parsear_respuesta(imei, response.text)
 
@@ -175,52 +132,6 @@ def consultar_imei(imei: str):
         raise HTTPException(status_code=400, detail="IMEI inválido. Debe tener exactamente 15 dígitos numéricos.")
 
     return consultar_imei_srtm(imei)
-
-@app.post(
-    "/imei/batch",
-    response_model=BatchResponse,
-    summary="Consultar múltiples IMEIs",
-    tags=["IMEI"]
-)
-def consultar_batch(body: BatchRequest):
-    """
-    Consulta hasta **20 IMEIs** en una sola petición.
-    Se aplica una pausa de 1.5s entre consultas para no saturar el servidor SRTM.
-    """
-    resultados = []
-    errores = 0
-
-    for i, imei in enumerate(body.imeis):
-        if not validar_imei(imei):
-            resultados.append(IMEIResponse(
-                imei=imei, estado="ERROR",
-                en_base_negativa=None, operador=None,
-                mensaje="IMEI inválido: debe tener 15 dígitos numéricos"
-            ))
-            errores += 1
-            continue
-
-        try:
-            resultado = consultar_imei_srtm(imei)
-            resultados.append(resultado)
-            if resultado.estado == "ERROR":
-                errores += 1
-        except Exception as e:
-            resultados.append(IMEIResponse(
-                imei=imei, estado="ERROR",
-                en_base_negativa=None, operador=None,
-                mensaje=str(e)
-            ))
-            errores += 1
-
-        if i < len(body.imeis) - 1:
-            time.sleep(1.5)
-
-    return BatchResponse(
-        total=len(resultados),
-        resultados=resultados,
-        errores=errores
-    )
 
 @app.get(
     "/health",

@@ -29,7 +29,6 @@
     overflow-x: hidden;
   }
 
-  /* Grid background */
   body::before {
     content: '';
     position: fixed;
@@ -50,10 +49,7 @@
     z-index: 1;
   }
 
-  /* Header */
-  header {
-    margin-bottom: 48px;
-  }
+  header { margin-bottom: 48px; }
 
   .badge {
     font-family: var(--mono);
@@ -84,7 +80,6 @@
     line-height: 1.6;
   }
 
-  /* Card */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -110,7 +105,6 @@
     margin-bottom: 20px;
   }
 
-  /* Input group */
   .input-group {
     display: flex;
     gap: 10px;
@@ -130,14 +124,8 @@
     transition: border-color 0.2s;
   }
 
-  input[type="text"]:focus {
-    border-color: var(--accent);
-  }
-
-  input[type="text"]::placeholder {
-    color: var(--muted);
-    letter-spacing: 1px;
-  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); letter-spacing: 1px; }
 
   button {
     background: var(--accent);
@@ -158,12 +146,7 @@
   button:active { transform: translateY(0); }
   button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  /* Result */
-  .result {
-    display: none;
-    margin-top: 20px;
-  }
-
+  .result { display: none; margin-top: 20px; }
   .result.visible { display: block; animation: fadeIn 0.3s ease; }
 
   @keyframes fadeIn {
@@ -180,13 +163,13 @@
     border: 1px solid;
   }
 
-  .status-bar.LIMPIO       { border-color: var(--accent);  background: rgba(0,255,136,0.05); }
-  .status-bar.REPORTADO    { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
-  .status-bar.DUPLICADO    { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
-  .status-bar.INVALIDO     { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
-  .status-bar.NO_REGISTRADO{ border-color: #ff9900;        background: rgba(255,153,0,0.05); }
-  .status-bar.ERROR        { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
-  .status-bar.DESCONOCIDO  { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
+  .status-bar.LIMPIO        { border-color: var(--accent);  background: rgba(0,255,136,0.05); }
+  .status-bar.REPORTADO     { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
+  .status-bar.DUPLICADO     { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
+  .status-bar.INVALIDO      { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
+  .status-bar.NO_REGISTRADO { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
+  .status-bar.ERROR         { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
+  .status-bar.DESCONOCIDO   { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
 
   .status-dot {
     width: 10px; height: 10px;
@@ -212,21 +195,17 @@
     letter-spacing: 2px;
   }
 
-  .LIMPIO    .status-label { color: var(--accent); }
-  .REPORTADO .status-label { color: var(--accent2); }
-  .DUPLICADO .status-label { color: #ff9900; }
-  .INVALIDO  .status-label { color: var(--accent2); }
+  .LIMPIO        .status-label { color: var(--accent); }
+  .REPORTADO     .status-label { color: var(--accent2); }
+  .DUPLICADO     .status-label { color: #ff9900; }
+  .INVALIDO      .status-label { color: var(--accent2); }
   .NO_REGISTRADO .status-label { color: #ff9900; }
-  .ERROR     .status-label { color: var(--muted); }
+  .ERROR         .status-label { color: var(--muted); }
 
   .result-grid {
     display: grid;
     grid-template-columns: 140px 1fr;
     gap: 0;
-  }
-
-  .result-row {
-    display: contents;
   }
 
   .result-key, .result-val {
@@ -250,7 +229,6 @@
     word-break: break-all;
   }
 
-  /* Endpoint docs */
   .endpoint {
     display: flex;
     align-items: baseline;
@@ -270,8 +248,7 @@
     flex-shrink: 0;
   }
 
-  .method.GET  { background: rgba(0,255,136,0.15); color: var(--accent); }
-  .method.POST { background: rgba(62,158,255,0.15); color: var(--accent3); }
+  .method.GET { background: rgba(0,255,136,0.15); color: var(--accent); }
 
   .ep-path {
     font-family: var(--mono);
@@ -280,12 +257,8 @@
     flex: 1;
   }
 
-  .ep-desc {
-    font-size: 12px;
-    color: var(--muted);
-  }
+  .ep-desc { font-size: 12px; color: var(--muted); }
 
-  /* Loading */
   .loading {
     display: none;
     font-family: var(--mono);
@@ -305,60 +278,6 @@
     33% { content: '..'; }
     66% { content: '...'; }
   }
-
-  /* Batch textarea */
-  textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 12px 16px;
-    resize: vertical;
-    min-height: 100px;
-    outline: none;
-    letter-spacing: 1px;
-    line-height: 1.8;
-    transition: border-color 0.2s;
-  }
-
-  textarea:focus { border-color: var(--accent); }
-
-  .batch-results { margin-top: 16px; }
-
-  .batch-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 12px;
-  }
-
-  .batch-imei { color: var(--muted); width: 160px; flex-shrink: 0; }
-  .batch-estado { font-weight: 700; letter-spacing: 1px; }
-  .batch-msg { color: var(--muted); font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .LIMPIO-text    { color: var(--accent); }
-  .REPORTADO-text { color: var(--accent2); }
-  .DUPLICADO-text { color: #ff9900; }
-  .ERROR-text     { color: var(--muted); }
-
-  .stats-row {
-    display: flex;
-    gap: 20px;
-    padding: 12px 14px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .stats-row span { color: var(--text); font-weight: 700; margin-left: 4px; }
 
   footer {
     margin-top: 60px;
@@ -396,17 +315,6 @@
     <div class="result" id="result"></div>
   </div>
 
-  <!-- Consulta batch -->
-  <div class="card">
-    <div class="card-title">// Consulta múltiple (máx. 20)</div>
-    <textarea id="batchInput" placeholder="353265110903640&#10;490154203237518&#10;012345678901239&#10;&#10;Un IMEI por línea..."></textarea>
-    <div style="margin-top:12px">
-      <button onclick="consultarBatch()" id="btnBatch">Consultar todos</button>
-    </div>
-    <div class="loading" id="loadingBatch">Consultando batch</div>
-    <div class="batch-results" id="batchResults"></div>
-  </div>
-
   <!-- Endpoints -->
   <div class="card">
     <div class="card-title">// Endpoints disponibles</div>
@@ -416,14 +324,6 @@
       <div>
         <div class="ep-path">/imei/{imei}</div>
         <div class="ep-desc">Consulta individual — retorna JSON con estado del IMEI</div>
-      </div>
-    </div>
-
-    <div class="endpoint">
-      <span class="method POST">POST</span>
-      <div>
-        <div class="ep-path">/imei/batch</div>
-        <div class="ep-desc">Consulta múltiple — body: <code style="color:var(--accent3)">{"imeis": ["...", "..."]}</code></div>
       </div>
     </div>
 
@@ -452,7 +352,7 @@
 </div>
 
 <script>
-const BASE = '';  // misma origen
+const BASE = '';
 
 const estadoLabel = {
   LIMPIO:        '✓ LIMPIO',
@@ -511,62 +411,6 @@ function renderResult(data, container) {
   `;
 }
 
-async function consultarBatch() {
-  const raw   = document.getElementById('batchInput').value;
-  const imeis = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-  if (imeis.length === 0) return;
-
-  const btn     = document.getElementById('btnBatch');
-  const loading = document.getElementById('loadingBatch');
-  const results = document.getElementById('batchResults');
-
-  btn.disabled = true;
-  loading.style.display = 'block';
-  results.innerHTML = '';
-
-  try {
-    const res  = await fetch(`${BASE}/imei/batch`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imeis })
-    });
-    const data = await res.json();
-    renderBatch(data, results);
-  } catch(e) {
-    results.innerHTML = `<div style="color:var(--accent2);font-family:var(--mono);font-size:12px;padding:12px">Error: ${e.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    loading.style.display = 'none';
-  }
-}
-
-function renderBatch(data, container) {
-  const limpios   = data.resultados.filter(r => r.estado === 'LIMPIO').length;
-  const reportados = data.resultados.filter(r => r.estado === 'REPORTADO').length;
-
-  let html = `
-    <div class="stats-row">
-      TOTAL <span>${data.total}</span>
-      &nbsp;·&nbsp; LIMPIOS <span style="color:var(--accent)">${limpios}</span>
-      &nbsp;·&nbsp; REPORTADOS <span style="color:var(--accent2)">${reportados}</span>
-      &nbsp;·&nbsp; ERRORES <span>${data.errores}</span>
-    </div>
-  `;
-
-  for (const r of data.resultados) {
-    html += `
-      <div class="batch-item">
-        <span class="batch-imei">${r.imei}</span>
-        <span class="batch-estado ${r.estado}-text">${estadoLabel[r.estado] || r.estado}</span>
-        <span class="batch-msg">${r.mensaje}</span>
-      </div>
-    `;
-  }
-
-  container.innerHTML = html;
-}
-
-// Enter para buscar
 document.getElementById('imeiInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') consultar();
 });
