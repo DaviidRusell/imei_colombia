@@ -7,19 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
+    --bg:      #0a0a0f;
     --surface: #13131a;
-    --border: #1e1e2e;
-    --accent: #00ff88;
-    --accent2: #ff3e6c;
-    --accent3: #3e9eff;
-    --text: #e8e8f0;
-    --muted: #6b6b7e;
+    --border:  #1e1e2e;
+    --accent:  #00ff88;
+    --danger:  #ff3e6c;
+    --warning: #ff9900;
+    --info:    #3e9eff;
+    --text:    #e8e8f0;
+    --muted:   #6b6b7e;
     --mono: 'Space Mono', monospace;
     --sans: 'Syne', sans-serif;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
     background: var(--bg);
@@ -30,303 +31,269 @@
   }
 
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content:'';
+    position:fixed; inset:0;
     background-image:
-      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0,255,136,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,.03) 1px, transparent 1px);
     background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events:none; z-index:0;
   }
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 24px;
-    position: relative;
-    z-index: 1;
-  }
+  .container { max-width:960px; margin:0 auto; padding:40px 24px; position:relative; z-index:1; }
 
-  header { margin-bottom: 48px; }
-
+  /* ── Header ── */
+  header { margin-bottom:48px; }
   .badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--accent);
-    text-transform: uppercase;
-    border: 1px solid rgba(0,255,136,0.3);
-    display: inline-block;
-    padding: 4px 10px;
-    margin-bottom: 16px;
+    font-family:var(--mono); font-size:10px; letter-spacing:3px;
+    color:var(--accent); border:1px solid rgba(0,255,136,.3);
+    display:inline-block; padding:4px 10px; margin-bottom:16px;
   }
+  h1 { font-size:clamp(32px,6vw,56px); font-weight:800; line-height:1.05; letter-spacing:-2px; }
+  h1 span { color:var(--accent); }
+  .subtitle { color:var(--muted); font-family:var(--mono); font-size:13px; margin-top:12px; line-height:1.6; }
 
-  h1 {
-    font-size: clamp(32px, 6vw, 56px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -2px;
-  }
+  /* ── Card ── */
+  .card { background:var(--surface); border:1px solid var(--border); padding:28px; margin-bottom:20px; position:relative; }
+  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,var(--accent),transparent); }
+  .card-title { font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:20px; }
 
-  h1 span { color: var(--accent); }
-
-  .subtitle {
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 13px;
-    margin-top: 12px;
-    line-height: 1.6;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 28px;
-    margin-bottom: 20px;
-    position: relative;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-  }
-
-  .card-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .input-group {
-    display: flex;
-    gap: 10px;
-    align-items: stretch;
-  }
-
+  /* ── Input ── */
+  .input-group { display:flex; gap:10px; align-items:stretch; }
   input[type="text"] {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 16px;
-    padding: 12px 16px;
-    letter-spacing: 2px;
-    outline: none;
-    transition: border-color 0.2s;
+    flex:1; background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-family:var(--mono); font-size:16px;
+    padding:12px 16px; letter-spacing:2px; outline:none; transition:border-color .2s;
   }
-
-  input[type="text"]:focus { border-color: var(--accent); }
-  input[type="text"]::placeholder { color: var(--muted); letter-spacing: 1px; }
+  input[type="text"]:focus { border-color:var(--accent); }
+  input[type="text"]::placeholder { color:var(--muted); letter-spacing:1px; }
 
   button {
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 12px 24px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
+    background:var(--accent); color:var(--bg); border:none;
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase;
+    padding:12px 24px; cursor:pointer; transition:all .15s; white-space:nowrap;
   }
+  button:hover { background:#00e07a; transform:translateY(-1px); }
+  button:active { transform:translateY(0); }
+  button:disabled { opacity:.4; cursor:not-allowed; transform:none; }
 
-  button:hover { background: #00e07a; transform: translateY(-1px); }
-  button:active { transform: translateY(0); }
-  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  /* ── Loading ── */
+  .loading { display:none; font-family:var(--mono); font-size:12px; color:var(--accent); letter-spacing:2px; padding:16px 0; }
+  .loading::after { content:''; animation:dots 1.5s infinite; }
+  @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
 
-  .result { display: none; margin-top: 20px; }
-  .result.visible { display: block; animation: fadeIn 0.3s ease; }
+  /* ── Result container ── */
+  .result { display:none; margin-top:20px; }
+  .result.visible { display:block; animation:fadeIn .3s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
+  /* ── Status bar ── */
   .status-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    border: 1px solid;
+    display:flex; align-items:center; gap:12px;
+    padding:16px 20px; margin-bottom:0; border:1px solid;
+    border-bottom:none;
+  }
+  .status-bar.LIMPIO                { border-color:var(--accent);  background:rgba(0,255,136,.06); }
+  .status-bar.ROBO_HURTO            { border-color:var(--danger);  background:rgba(255,62,108,.06); }
+  .status-bar.BLOQUEO_NO_REGISTRADO { border-color:var(--danger);  background:rgba(255,62,108,.06); }
+  .status-bar.DUPLICADO             { border-color:var(--warning); background:rgba(255,153,0,.06); }
+  .status-bar.REINCIDENTE           { border-color:var(--warning); background:rgba(255,153,0,.06); }
+  .status-bar.PERDIDA               { border-color:var(--danger);  background:rgba(255,62,108,.06); }
+  .status-bar.MULTIPLE              { border-color:var(--danger);  background:rgba(255,62,108,.06); }
+  .status-bar.OTRO                  { border-color:var(--warning); background:rgba(255,153,0,.06); }
+  .status-bar.ERROR                 { border-color:var(--muted);   background:rgba(107,107,126,.06); }
+
+  .status-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; animation:pulse 2s infinite; }
+  .LIMPIO .status-dot                { background:var(--accent); }
+  .ROBO_HURTO .status-dot            { background:var(--danger); }
+  .BLOQUEO_NO_REGISTRADO .status-dot { background:var(--danger); }
+  .DUPLICADO .status-dot             { background:var(--warning); }
+  .REINCIDENTE .status-dot           { background:var(--warning); }
+  .PERDIDA .status-dot               { background:var(--danger); }
+  .MULTIPLE .status-dot              { background:var(--danger); }
+  .ERROR .status-dot                 { background:var(--muted); animation:none; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .status-label { font-family:var(--mono); font-size:14px; font-weight:700; letter-spacing:2px; flex:1; }
+  .LIMPIO .status-label                { color:var(--accent); }
+  .ROBO_HURTO .status-label            { color:var(--danger); }
+  .BLOQUEO_NO_REGISTRADO .status-label { color:var(--danger); }
+  .DUPLICADO .status-label             { color:var(--warning); }
+  .REINCIDENTE .status-label           { color:var(--warning); }
+  .PERDIDA .status-label               { color:var(--danger); }
+  .MULTIPLE .status-label              { color:var(--danger); }
+  .ERROR .status-label                 { color:var(--muted); }
+
+  .status-badge {
+    font-family:var(--mono); font-size:10px; font-weight:700;
+    padding:3px 8px; border:1px solid;
   }
 
-  .status-bar.LIMPIO        { border-color: var(--accent);  background: rgba(0,255,136,0.05); }
-  .status-bar.REPORTADO     { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
-  .status-bar.DUPLICADO     { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
-  .status-bar.INVALIDO      { border-color: var(--accent2); background: rgba(255,62,108,0.05); }
-  .status-bar.NO_REGISTRADO { border-color: #ff9900;        background: rgba(255,153,0,0.05); }
-  .status-bar.ERROR         { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
-  .status-bar.DESCONOCIDO   { border-color: var(--muted);   background: rgba(107,107,126,0.05); }
-
-  .status-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    animation: pulse 2s infinite;
+  /* ── Data grid ── */
+  .data-block { border:1px solid var(--border); }
+  .data-row { display:grid; grid-template-columns:140px 1fr; border-bottom:1px solid var(--border); }
+  .data-row:last-child { border-bottom:none; }
+  .data-key {
+    font-family:var(--mono); font-size:10px; color:var(--muted);
+    letter-spacing:1px; text-transform:uppercase;
+    padding:11px 14px; background:rgba(255,255,255,.02);
+    border-right:1px solid var(--border);
+    display:flex; align-items:center;
   }
+  .data-val { font-family:var(--mono); font-size:12px; color:var(--text); padding:11px 14px; word-break:break-all; line-height:1.5; }
+  .data-val.green { color:var(--accent); }
+  .data-val.red   { color:var(--danger); }
 
-  .LIMPIO    .status-dot { background: var(--accent); }
-  .REPORTADO .status-dot { background: var(--accent2); }
-  .DUPLICADO .status-dot { background: #ff9900; }
-  .ERROR     .status-dot { background: var(--muted); animation: none; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  /* ── Tags de causales/operadores ── */
+  .tags { display:flex; flex-wrap:wrap; gap:6px; padding:10px 14px; }
+  .tag {
+    font-family:var(--mono); font-size:10px; font-weight:700;
+    padding:3px 8px; letter-spacing:.5px;
   }
+  .tag.danger  { background:rgba(255,62,108,.12); color:var(--danger);  border:1px solid rgba(255,62,108,.3); }
+  .tag.warning { background:rgba(255,153,0,.12);  color:var(--warning); border:1px solid rgba(255,153,0,.3); }
+  .tag.muted   { background:rgba(107,107,126,.12);color:var(--muted);   border:1px solid rgba(107,107,126,.3); }
+  .tag.info    { background:rgba(62,158,255,.12);  color:var(--info);    border:1px solid rgba(62,158,255,.3); }
 
-  .status-label {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
+  /* ── Tabla de reportes ── */
+  .reportes-header {
+    font-family:var(--mono); font-size:10px; color:var(--danger);
+    letter-spacing:1.5px; padding:8px 14px;
+    background:rgba(255,62,108,.06); border-top:1px solid rgba(255,62,108,.25);
+    border-bottom:1px solid rgba(255,62,108,.25);
+    text-transform:uppercase;
   }
-
-  .LIMPIO        .status-label { color: var(--accent); }
-  .REPORTADO     .status-label { color: var(--accent2); }
-  .DUPLICADO     .status-label { color: #ff9900; }
-  .INVALIDO      .status-label { color: var(--accent2); }
-  .NO_REGISTRADO .status-label { color: #ff9900; }
-  .ERROR         .status-label { color: var(--muted); }
-
-  .result-grid {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 0;
+  .reportes-table { width:100%; border-collapse:collapse; }
+  .reportes-table th {
+    font-family:var(--mono); font-size:9px; color:var(--muted);
+    letter-spacing:1.5px; text-transform:uppercase; text-align:left;
+    padding:8px 14px; border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.02);
   }
-
-  .result-key, .result-val {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
+  .reportes-table td { font-family:var(--mono); font-size:11px; padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  .reportes-table tr:last-child td { border-bottom:none; }
+  .reportes-table .num { color:var(--muted); width:32px; }
+  .causal-chip {
+    display:inline-block; font-family:var(--mono); font-size:9px;
+    font-weight:700; letter-spacing:.5px; padding:2px 7px;
+    border:1px solid; margin-bottom:3px;
   }
+  .causal-chip.danger  { background:rgba(255,62,108,.12); color:var(--danger);  border-color:rgba(255,62,108,.35); }
+  .causal-chip.warning { background:rgba(255,153,0,.12);  color:var(--warning); border-color:rgba(255,153,0,.35); }
+  .causal-chip.muted   { background:rgba(107,107,126,.12);color:var(--muted);   border-color:rgba(107,107,126,.35); }
+  .causal-sub { color:var(--muted); font-size:10px; margin-top:2px; }
+  .operador-cell { color:var(--text); }
 
-  .result-key {
-    font-family: var(--mono);
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    background: rgba(255,255,255,0.02);
+  /* ── Batch ── */
+  textarea {
+    width:100%; background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-family:var(--mono); font-size:13px;
+    padding:12px 16px; resize:vertical; min-height:100px; outline:none;
+    letter-spacing:1px; line-height:1.8; transition:border-color .2s;
   }
-
-  .result-val {
-    font-family: var(--mono);
-    color: var(--text);
-    word-break: break-all;
+  textarea:focus { border-color:var(--accent); }
+  .batch-results { margin-top:16px; }
+  .stats-row {
+    display:flex; flex-wrap:wrap; gap:16px; padding:12px 14px;
+    background:rgba(255,255,255,.02); border:1px solid var(--border);
+    margin-bottom:12px; font-family:var(--mono); font-size:11px; color:var(--muted);
   }
-
-  .endpoint {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
+  .stats-row span { font-weight:700; margin-left:4px; }
+  .batch-item {
+    display:grid; grid-template-columns:160px 160px 1fr;
+    gap:12px; align-items:center;
+    padding:10px 14px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:12px;
+    cursor:pointer; transition:background .15s;
   }
+  .batch-item:hover { background:rgba(255,255,255,.02); }
+  .batch-item:last-child { border-bottom:none; }
+  .batch-imei { color:var(--muted); }
+  .batch-estado { font-weight:700; letter-spacing:1px; }
+  .batch-msg { color:var(--muted); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .batch-detail { display:none; background:rgba(0,0,0,.2); border-bottom:1px solid var(--border); }
+  .batch-detail.open { display:block; }
 
-  .endpoint:last-child { border-bottom: none; }
+  /* ── Endpoints ── */
+  .endpoint { display:flex; align-items:baseline; gap:12px; padding:14px 0; border-bottom:1px solid var(--border); }
+  .endpoint:last-child { border-bottom:none; }
+  .method { font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:1px; padding:3px 8px; flex-shrink:0; }
+  .method.GET  { background:rgba(0,255,136,.15); color:var(--accent); }
+  .method.POST { background:rgba(62,158,255,.15); color:var(--info); }
+  .ep-path { font-family:var(--mono); font-size:13px; color:var(--text); flex:1; }
+  .ep-desc { font-size:12px; color:var(--muted); margin-top:3px; }
 
-  .method {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 3px 8px;
-    flex-shrink: 0;
-  }
+  /* ── Schema card ── */
+  .schema { background:var(--bg); border:1px solid var(--border); padding:0; font-family:var(--mono); font-size:12px; line-height:2; }
+  .schema-row { display:grid; grid-template-columns:180px 100px 1fr; border-bottom:1px solid var(--border); }
+  .schema-row:last-child { border-bottom:none; }
+  .schema-field { padding:6px 12px; color:var(--accent); }
+  .schema-type  { padding:6px 12px; color:var(--info); }
+  .schema-desc  { padding:6px 12px; color:var(--muted); font-size:11px; }
 
-  .method.GET { background: rgba(0,255,136,0.15); color: var(--accent); }
+  footer { margin-top:60px; padding-top:24px; border-top:1px solid var(--border); font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
 
-  .ep-path {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text);
-    flex: 1;
-  }
-
-  .ep-desc { font-size: 12px; color: var(--muted); }
-
-  .loading {
-    display: none;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    padding: 16px 0;
-  }
-
-  .loading::after {
-    content: '';
-    animation: dots 1.5s infinite;
-  }
-
-  @keyframes dots {
-    0%  { content: '.'; }
-    33% { content: '..'; }
-    66% { content: '...'; }
-  }
-
-  footer {
-    margin-top: 60px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  /* colores de texto en batch */
+  .c-green   { color:var(--accent); }
+  .c-red     { color:var(--danger); }
+  .c-warning { color:var(--warning); }
+  .c-muted   { color:var(--muted); }
 </style>
 </head>
 <body>
 <div class="container">
 
   <header>
-    <div class="badge">v1.0.0 · SRTM Colombia</div>
+    <div class="badge">v2.0.0 · SRTM Colombia</div>
     <h1>API IMEI<br><span>Colombia</span></h1>
     <p class="subtitle">
-      Consulta el estado de equipos móviles en la Base de Datos<br>
-      Negativa del SRTM — Resolución CRC 3128 de 2011
+      Consulta el estado de equipos móviles en la Base de Datos Negativa del SRTM<br>
+      Soporta múltiples reportes por IMEI — Resolución CRC 3128 de 2011
     </p>
   </header>
 
-  <!-- Consulta individual -->
+  <!-- ── Consulta individual ── -->
   <div class="card">
     <div class="card-title">// Consulta individual</div>
     <div class="input-group">
-      <input type="text" id="imeiInput" placeholder="353265110903640" maxlength="15">
+      <input type="text" id="imeiInput" placeholder="353265110903640" maxlength="15"
+             onkeydown="if(event.key==='Enter') consultar()">
       <button onclick="consultar()" id="btnConsultar">Consultar</button>
     </div>
     <div class="loading" id="loading">Consultando SRTM</div>
     <div class="result" id="result"></div>
   </div>
 
-  <!-- Endpoints -->
+  <!-- ── Consulta batch ── -->
   <div class="card">
-    <div class="card-title">// Endpoints disponibles</div>
+    <div class="card-title">// Consulta múltiple (máx. 20)</div>
+    <textarea id="batchInput" placeholder="353265110903640&#10;355567610813403&#10;987654321987651&#10;&#10;Un IMEI por línea..."></textarea>
+    <div style="margin-top:12px">
+      <button onclick="consultarBatch()" id="btnBatch">Consultar todos</button>
+    </div>
+    <div class="loading" id="loadingBatch">Consultando batch</div>
+    <div class="batch-results" id="batchResults"></div>
+  </div>
 
+  <!-- ── Endpoints ── -->
+  <div class="card">
+    <div class="card-title">// Endpoints</div>
     <div class="endpoint">
       <span class="method GET">GET</span>
       <div>
         <div class="ep-path">/imei/{imei}</div>
-        <div class="ep-desc">Consulta individual — retorna JSON con estado del IMEI</div>
+        <div class="ep-desc">Consulta individual — retorna JSON completo con array de reportes</div>
       </div>
     </div>
-
+    <div class="endpoint">
+      <span class="method POST">POST</span>
+      <div>
+        <div class="ep-path">/imei/batch</div>
+        <div class="ep-desc">Consulta múltiple — body: <code style="color:var(--info)">{"imeis":["...","..."]}</code></div>
+      </div>
+    </div>
     <div class="endpoint">
       <span class="method GET">GET</span>
       <div>
@@ -334,7 +301,6 @@
         <div class="ep-desc">Estado del servicio</div>
       </div>
     </div>
-
     <div class="endpoint">
       <span class="method GET">GET</span>
       <div>
@@ -344,26 +310,163 @@
     </div>
   </div>
 
+  <!-- ── Schema de respuesta ── -->
+  <div class="card">
+    <div class="card-title">// Schema de respuesta</div>
+    <div class="schema">
+      <div class="schema-row"><div class="schema-field">imei</div><div class="schema-type">string</div><div class="schema-desc">IMEI consultado (15 dígitos)</div></div>
+      <div class="schema-row"><div class="schema-field">estado</div><div class="schema-type">string</div><div class="schema-desc">LIMPIO · ROBO_HURTO · BLOQUEO_NO_REGISTRADO · DUPLICADO · REINCIDENTE · PERDIDA · MULTIPLE · OTRO · ERROR</div></div>
+      <div class="schema-row"><div class="schema-field">en_base_negativa</div><div class="schema-type">boolean</div><div class="schema-desc">true si el equipo está bloqueado en Colombia</div></div>
+      <div class="schema-row"><div class="schema-field">causales</div><div class="schema-type">string[]</div><div class="schema-desc">Lista de causales únicas presentes</div></div>
+      <div class="schema-row"><div class="schema-field">operadores</div><div class="schema-type">string[]</div><div class="schema-desc">Lista de operadores únicos que reportaron</div></div>
+      <div class="schema-row"><div class="schema-field">reportes</div><div class="schema-type">Reporte[]</div><div class="schema-desc">Detalle fila a fila: {causal, causal_texto, operador}</div></div>
+      <div class="schema-row"><div class="schema-field">total_reportes</div><div class="schema-type">int</div><div class="schema-desc">Número total de filas en la respuesta del SRTM</div></div>
+      <div class="schema-row"><div class="schema-field">resumen</div><div class="schema-type">string</div><div class="schema-desc">Mensaje legible para el usuario final</div></div>
+    </div>
+  </div>
+
   <footer>
     <span>Fuente: imeicolombia.com.co · Inetum · CRC</span>
-    <span>FastAPI + BeautifulSoup</span>
+    <span>FastAPI 2.0.0 · BeautifulSoup</span>
   </footer>
 
 </div>
 
 <script>
+// ── Config ────────────────────────────────────────────────────────────────────
 const BASE = '';
 
-const estadoLabel = {
-  LIMPIO:        '✓ LIMPIO',
-  REPORTADO:     '✗ REPORTADO',
-  DUPLICADO:     '⚠ DUPLICADO',
-  INVALIDO:      '✗ INVÁLIDO',
-  NO_REGISTRADO: '⚠ NO REGISTRADO',
-  ERROR:         '? ERROR',
-  DESCONOCIDO:   '? DESCONOCIDO',
+// ── Estado → etiqueta + color ─────────────────────────────────────────────────
+const ESTADOS = {
+  LIMPIO:                { label:'✓ LIMPIO',               cls:'c-green'   },
+  ROBO_HURTO:            { label:'✗ ROBO / HURTO',         cls:'c-red'     },
+  BLOQUEO_NO_REGISTRADO: { label:'✗ BLOQUEO / NO REG.',    cls:'c-red'     },
+  DUPLICADO:             { label:'⚠ DUPLICADO',            cls:'c-warning' },
+  REINCIDENTE:           { label:'⚠ REINCIDENTE',          cls:'c-warning' },
+  PERDIDA:               { label:'✗ PÉRDIDA',              cls:'c-red'     },
+  MULTIPLE:              { label:'⚠ MÚLTIPLES REPORTES',   cls:'c-red'     },
+  OTRO:                  { label:'⚠ OTRO',                 cls:'c-warning' },
+  ERROR:                 { label:'? ERROR',                cls:'c-muted'   },
 };
 
+function estadoInfo(e) {
+  return ESTADOS[e] || { label: e, cls:'c-muted' };
+}
+
+// ── Color de causal ───────────────────────────────────────────────────────────
+function causalCls(causal) {
+  if (['ROBO_HURTO','BLOQUEO_NO_REGISTRADO','PERDIDA'].includes(causal)) return 'danger';
+  if (['DUPLICADO','REINCIDENTE'].includes(causal)) return 'warning';
+  return 'muted';
+}
+
+// ── Render resultado individual ───────────────────────────────────────────────
+function renderResult(data, container) {
+  const estado = data.estado || 'ERROR';
+  const info   = estadoInfo(estado);
+
+  // Barra de estado
+  let badge = '';
+  if (data.total_reportes > 1) {
+    badge = `<span class="status-badge" style="border-color:currentColor;color:inherit">${data.total_reportes} reportes</span>`;
+  }
+
+  // Filas de datos básicos
+  let rows = `
+    <div class="data-row">
+      <div class="data-key">IMEI</div>
+      <div class="data-val">${data.imei || '—'}</div>
+    </div>
+    <div class="data-row">
+      <div class="data-key">ESTADO</div>
+      <div class="data-val ${info.cls}">${info.label}</div>
+    </div>
+    <div class="data-row">
+      <div class="data-key">BASE NEGATIVA</div>
+      <div class="data-val ${data.en_base_negativa ? 'red' : 'green'}">
+        ${data.en_base_negativa ? 'Sí — equipo bloqueado' : 'No — equipo libre'}
+      </div>
+    </div>
+  `;
+
+  // Causales como tags
+  if (data.causales && data.causales.length > 0) {
+    const tags = data.causales.map(c =>
+      `<span class="tag ${causalCls(c)}">${c.replaceAll('_','/')}</span>`
+    ).join('');
+    rows += `
+      <div class="data-row">
+        <div class="data-key">CAUSALES</div>
+        <div class="data-val" style="padding:8px 14px">${tags}</div>
+      </div>
+    `;
+  }
+
+  // Operadores como tags
+  if (data.operadores && data.operadores.length > 0) {
+    const tags = data.operadores.map(o =>
+      `<span class="tag info">${o}</span>`
+    ).join('');
+    rows += `
+      <div class="data-row">
+        <div class="data-key">OPERADORES</div>
+        <div class="data-val" style="padding:8px 14px">${tags}</div>
+      </div>
+    `;
+  }
+
+  // Resumen
+  rows += `
+    <div class="data-row">
+      <div class="data-key">RESUMEN</div>
+      <div class="data-val">${data.resumen || '—'}</div>
+    </div>
+  `;
+
+  // Tabla de reportes detallada
+  let reportesHtml = '';
+  if (data.reportes && data.reportes.length > 0) {
+    const filas = data.reportes.map((r, i) => `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td>
+          <div class="causal-chip ${causalCls(r.causal)}">${r.causal.replaceAll('_','/')}</div>
+          <div class="causal-sub">${r.causal_texto}</div>
+        </td>
+        <td class="operador-cell">${r.operador}</td>
+      </tr>
+    `).join('');
+
+    reportesHtml = `
+      <div class="reportes-header">// DETALLE DE REPORTES (${data.total_reportes})</div>
+      <table class="reportes-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>CAUSAL</th>
+            <th>OPERADOR</th>
+          </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+      </table>
+    `;
+  }
+
+  container.className = 'result visible';
+  container.innerHTML = `
+    <div class="status-bar ${estado}">
+      <div class="status-dot"></div>
+      <div class="status-label ${info.cls}">${info.label}</div>
+      ${badge}
+    </div>
+    <div class="data-block">
+      ${rows}
+      ${reportesHtml}
+    </div>
+  `;
+}
+
+// ── Consulta individual ───────────────────────────────────────────────────────
 async function consultar() {
   const imei = document.getElementById('imeiInput').value.trim();
   if (!imei) return;
@@ -381,39 +484,99 @@ async function consultar() {
     const data = await res.json();
     renderResult(data, result);
   } catch(e) {
-    renderResult({ imei, estado: 'ERROR', mensaje: e.message, en_base_negativa: null, operador: null }, result);
+    renderResult({ imei, estado:'ERROR', en_base_negativa:false, causales:[], operadores:[], reportes:[], total_reportes:0, resumen: e.message }, result);
   } finally {
     btn.disabled = false;
     loading.style.display = 'none';
   }
 }
 
-function renderResult(data, container) {
-  const estado = data.estado || 'DESCONOCIDO';
-  container.className = 'result visible';
-  container.innerHTML = `
-    <div class="status-bar ${estado}">
-      <div class="status-dot"></div>
-      <div class="status-label">${estadoLabel[estado] || estado}</div>
-    </div>
-    <div class="result-grid">
-      <div class="result-key">IMEI</div>
-      <div class="result-val">${data.imei || '—'}</div>
-      <div class="result-key">Estado</div>
-      <div class="result-val">${estado}</div>
-      <div class="result-key">Base negativa</div>
-      <div class="result-val">${data.en_base_negativa === null ? '—' : data.en_base_negativa ? 'Sí' : 'No'}</div>
-      <div class="result-key">Operador</div>
-      <div class="result-val">${data.operador || '—'}</div>
-      <div class="result-key">Mensaje</div>
-      <div class="result-val">${data.mensaje || '—'}</div>
-    </div>
-  `;
+// ── Consulta batch ────────────────────────────────────────────────────────────
+async function consultarBatch() {
+  const raw   = document.getElementById('batchInput').value;
+  const imeis = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (!imeis.length) return;
+
+  const btn     = document.getElementById('btnBatch');
+  const loading = document.getElementById('loadingBatch');
+  const results = document.getElementById('batchResults');
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  results.innerHTML = '';
+
+  try {
+    const res  = await fetch(`${BASE}/imei/batch`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ imeis })
+    });
+    const data = await res.json();
+    renderBatch(data, results);
+  } catch(e) {
+    results.innerHTML = `<div style="color:var(--danger);font-family:var(--mono);font-size:12px;padding:12px">Error: ${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
 }
 
-document.getElementById('imeiInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') consultar();
-});
+function renderBatch(data, container) {
+  const limpios    = data.resultados.filter(r => r.estado === 'LIMPIO').length;
+  const reportados = data.resultados.filter(r => r.estado !== 'LIMPIO' && r.estado !== 'ERROR').length;
+
+  let html = `
+    <div class="stats-row">
+      TOTAL <span>${data.total}</span>
+      &nbsp;·&nbsp; LIMPIOS <span class="c-green">${limpios}</span>
+      &nbsp;·&nbsp; REPORTADOS <span class="c-red">${reportados}</span>
+      &nbsp;·&nbsp; ERRORES <span>${data.errores}</span>
+    </div>
+  `;
+
+  data.resultados.forEach((r, idx) => {
+    const info = estadoInfo(r.estado);
+    // Tabla de reportes expandible
+    let detailHtml = '';
+    if (r.reportes && r.reportes.length > 0) {
+      const filas = r.reportes.map((rep, i) => `
+        <tr>
+          <td class="num" style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${i+1}</td>
+          <td style="padding:8px 14px">
+            <div class="causal-chip ${causalCls(rep.causal)}">${rep.causal.replaceAll('_','/')}</div>
+            <div class="causal-sub">${rep.causal_texto}</div>
+          </td>
+          <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text)">${rep.operador}</td>
+        </tr>
+      `).join('');
+      detailHtml = `
+        <div class="batch-detail" id="detail-${idx}" style="padding:0 14px 12px">
+          <table class="reportes-table" style="margin-top:8px">
+            <thead><tr><th>#</th><th>CAUSAL</th><th>OPERADOR</th></tr></thead>
+            <tbody>${filas}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    const hasDetail = r.reportes && r.reportes.length > 0;
+    html += `
+      <div class="batch-item" onclick="${hasDetail ? `toggleDetail(${idx})` : ''}">
+        <span class="batch-imei">${r.imei}</span>
+        <span class="batch-estado ${info.cls}">${info.label}</span>
+        <span class="batch-msg">${r.resumen || '—'}</span>
+      </div>
+      ${detailHtml}
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleDetail(idx) {
+  const el = document.getElementById(`detail-${idx}`);
+  if (el) el.classList.toggle('open');
+}
 </script>
 </body>
 </html>
